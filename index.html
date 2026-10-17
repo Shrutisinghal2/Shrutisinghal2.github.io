@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shruti Singhal – Portfolio</title>
+  <meta name="description" content="Portfolio of Shruti Singhal: projects, work experience, skills, education and certifications.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Banner -->
+  <header class="banner">
+    <div class="avatar" id="avatar"><img id="photo" alt=""><span id="initials"></span></div>
+    <h1 class="name" id="name"></h1>
+    <p class="designation" id="designation"></p>
+    <p class="location" id="location"></p>
+    <div class="socials" id="socials"></div>
+  </header>
+
+  <!-- Contact strip -->
+  <section class="strip" aria-label="Contact details">
+    <div class="strip-inner">
+      <div class="detail"><span class="label">Email</span><a id="email"></a></div>
+      <div class="detail" id="phoneWrap" hidden><span class="label">Mobile</span><span id="phone"></span></div>
+      <div class="detail"><span class="label">Address</span><span id="address"></span></div>
+      <div class="detail actions">
+        <a class="btn" id="resumeBtn" download>Download resume</a>
+      </div>
+      <figure class="site-qr">
+        <div class="qr" id="siteQr"></div>
+        <figcaption>Scan to share<br><button class="link-btn light" id="siteQrDownload" type="button">Download QR</button></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Tabs (desktop) / accordion (mobile) -->
+  <main class="content">
+    <nav class="tabs" id="tabs" role="tablist" aria-label="Portfolio sections"></nav>
+    <div id="panels"></div>
+  </main>
+
+  <footer class="foot" id="foot"></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+  <script src="data.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
