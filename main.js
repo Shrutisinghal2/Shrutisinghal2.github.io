@@ -45,7 +45,7 @@
 
   /* ---------- Banner ---------- */
   $('name').textContent = P.name;
-  $('designation').textContent = `${P.designation} at ${P.company}`;
+  $('designation').textContent = P.company ? `${P.designation} at ${P.company}` : P.designation;
   $('location').textContent = P.location;
   $('initials').textContent = P.name.split(' ').map(w => w[0]).join('').slice(0, 2);
   const photo = $('photo');

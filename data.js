@@ -8,8 +8,8 @@
 // ============================================================
 window.PORTFOLIO = {
   name: "Shruti Singhal",
-  designation: "Software Development and Testing Intern",
-  company: "PaySecure Technologies",
+  designation: "QA & Software Testing · Salesforce Certified Platform Developer I",
+  company: "",                // leave empty to show only the line above
   location: "Jaipur, Rajasthan",
   photo: "photo.jpg",
   email: "shrutisinghal3003@gmail.com",
@@ -23,7 +23,7 @@ window.PORTFOLIO = {
   },
 
   summary: [
-    "I'm an MCA graduate (Banasthali Vidyapith, 2026) working as a Software Development and Testing Intern at PaySecure Technologies, where I test payment processing and merchant management modules.",
+    "I'm an MCA graduate (Banasthali Vidyapith, 2026) focused on software testing and quality. During my internship at PaySecure Technologies I tested payment processing and merchant management modules.",
     "I write test cases from requirements, run functional, integration and regression tests, reproduce defects and work with developers until they're fixed. I'm a Salesforce Certified Platform Developer I and enjoy building small apps, from Lightning Web Components to JavaScript web apps, to understand quality from the developer's side too.",
     "I'm looking for QA, software testing and automation roles.",
   ],
@@ -31,6 +31,7 @@ window.PORTFOLIO = {
   projects: [
     {
       name: "AniFind", tagline: "Anime discovery web app", status: "Live",
+      image: "shots/anifind.png",
       description: "Search anime, filter by genre, browse trending and seasonal lists, keep a watchlist and find official places to watch.",
       tech: ["JavaScript", "GraphQL", "AniList API", "GitHub Pages"],
       live: "https://shrutisinghal2.github.io/anifind/",
@@ -85,8 +86,8 @@ window.PORTFOLIO = {
       role: "Software Development and Testing Intern",
       company: "PaySecure Technologies Pvt. Ltd.",
       location: "Jaipur",
-      dates: "Jan 2026 – Present",
-      current: true,
+      dates: "Jan 2026 – Oct 2026",
+      current: false,
       points: [
         "Wrote and executed test cases and scenarios from product requirements for payment processing and merchant management modules.",
         "Ran functional, integration and regression tests across dashboard and backend transaction workflows.",
