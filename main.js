@@ -7,6 +7,25 @@
   const hasQr = typeof window.qrcode === 'function';
   const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
+
+  /* ---------- project icons (picked by keywords in the project name) ---------- */
+  const ICONS = {
+    anime:    '<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M10 9.5v5l4.5-2.5z"/><path d="M8 2l4 3 4-3"/>',
+    test:     '<path d="M9 3h6"/><path d="M10 3v6L4.5 18.5A1.7 1.7 0 0 0 6 21h12a1.7 1.7 0 0 0 1.5-2.5L14 9V3"/><path d="M7 15h10"/>',
+    bmi:      '<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 9a5.5 5.5 0 0 1 8 0"/><path d="M12 12l2-3"/>',
+    alarm:    '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2"/><path d="M5 3L2 6"/><path d="M19 3l3 3"/>',
+    currency: '<path d="M4 8h13l-3-3"/><path d="M20 16H7l3 3"/><path d="M9 12h6"/>',
+    weather:  '<path d="M12 3v1.5M5.6 5.6l1 1M3 12h1.5M18.4 5.6l-1 1"/><path d="M8.5 11a3.5 3.5 0 0 1 6.6-1.6"/><path d="M8 20h9a3.5 3.5 0 0 0 0-7 5 5 0 0 0-9.6 1.6A2.8 2.8 0 0 0 8 20z"/>',
+    note:     '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 17h5"/>',
+    survey:   '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 2h6v4H9z"/><path d="M8.5 12l1.5 1.5 3-3"/><path d="M8.5 17h7"/>',
+    code:     '<path d="M8 7l-5 5 5 5"/><path d="M16 7l5 5-5 5"/>',
+  };
+  function iconFor(p) {
+    const n = (p.icon || p.name).toLowerCase();
+    const key = p.icon || ['anime','test','bmi','alarm','currency','weather','note','survey'].find(k => n.includes(k === 'anime' ? 'ani' : k)) || 'code';
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICONS[key] || ICONS.code) + '</svg>';
+  }
+
   /* ---------- QR helpers ---------- */
   function makeQr(url) { const q = window.qrcode(0, 'M'); q.addData(url); q.make(); return q; }
   function renderQr(box, url, label) {
@@ -57,7 +76,7 @@
         const card = el('article', 'card');
         const tile = el('div', 'tile tone-' + (i % 6)); tile.dataset.n = String(i + 1).padStart(2, '0');
         if (p.image) { const im = el('img'); im.src = p.image; im.alt = p.name + ' screenshot'; tile.appendChild(im); }
-        else tile.textContent = p.name.split(/\s+/).map(w => w[0]).join('').slice(0, 3).toUpperCase();
+        else { tile.innerHTML = iconFor(p); }
         const body = el('div', 'card-body');
         const st = /live/i.test(p.status) ? 'live' : /progress/i.test(p.status) ? 'progress' : 'done';
         body.append(el('span', 'status ' + st, p.status), el('h3', null, p.name), el('p', 'tagline', p.tagline), el('p', 'desc', p.description));

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Weather App · Shruti Singhal</title>
+<link rel="stylesheet" href="../common.css">
+<style>
+  body{min-height:100vh;background:#091f43;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:64px 16px 32px}
+  .card{background:#fff;width:100%;max-width:400px;border-radius:8px;color:#091f43;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+  header{display:flex;align-items:center;justify-content:center;gap:12px;padding:16px;border-bottom:1px solid #ccc}
+  header h1{font-size:28px;font-weight:500;margin:0}
+  .backarrow{border:0;background:none;font-size:24px;cursor:pointer;color:#091f43}
+  form{margin:24px}
+  input{width:100%;text-align:center;padding:16px;height:55px;font-size:22px;border-radius:8px;border:1px solid #ccc;outline:none}
+  input:focus{border-color:#ed2144}
+  .search{width:100%;margin-top:22px;background:#ed2144;height:55px;border:0;font-size:22px;border-radius:8px;color:#fff;cursor:pointer}
+  .msg{border-radius:5px;padding:12px;margin:12px}
+  .ok{color:#155724;background:#d4edda}.bad{color:#721c24;background:#f8d7da}
+  .res{text-align:center;margin:24px}
+  .icon{font-size:96px;line-height:1}
+  .temp{font-size:60px;font-weight:700;padding-top:12px}
+  .desc,.loc{font-size:22px;padding-top:14px}
+  footer{display:flex;border-top:1px solid #ccc;text-align:center}
+  footer div{width:100%;padding:16px}
+  footer div+div{border-left:1px solid #ccc}
+  footer b{display:block;font-size:20px}
+  .credit{color:#cfd8ea}
+</style>
+</head>
+<body>
+<a class="back" href="../../">← Portfolio</a>
+<div class="card">
+  <header><button class="backarrow" id="backBtn" hidden aria-label="Back">←</button><h1>Weather App</h1></header>
+  <div id="msg"></div>
+  <form id="form">
+    <input id="city" type="text" placeholder="Enter city name" required spellcheck="false" aria-label="City name">
+    <button class="search">Search</button>
+  </form>
+  <div id="out" hidden>
+    <div class="res">
+      <div class="icon" id="icon"></div>
+      <div class="temp"><span id="temp"></span>°C</div>
+      <div class="desc" id="desc"></div>
+      <div class="loc">📍 <span id="loc"></span></div>
+    </div>
+    <footer>
+      <div>🌡️<b id="feels"></b>Feels like</div>
+      <div>💧<b id="hum"></b>Humidity</div>
+    </footer>
+  </div>
+</div>
+<p class="credit">Data from Open-Meteo · Web version of my Salesforce LWC + Apex project</p>
+<script>
+  const CODES = {0:['Clear sky','☀️'],1:['Mainly clear','🌤️'],2:['Partly cloudy','⛅'],3:['Overcast','☁️'],45:['Fog','🌫️'],48:['Fog','🌫️'],51:['Light drizzle','🌦️'],53:['Drizzle','🌦️'],55:['Heavy drizzle','🌧️'],61:['Light rain','🌦️'],63:['Rain','🌧️'],65:['Heavy rain','🌧️'],71:['Light snow','🌨️'],73:['Snow','🌨️'],75:['Heavy snow','❄️'],80:['Rain showers','🌦️'],81:['Rain showers','🌧️'],82:['Violent showers','⛈️'],95:['Thunderstorm','⛈️'],96:['Thunderstorm with hail','⛈️'],99:['Thunderstorm with hail','⛈️']};
+  const show = (text, ok) => msg.innerHTML = text ? `<div class="msg ${ok ? 'ok' : 'bad'}">${text}</div>` : '';
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const name = city.value.trim(); show('Fetching weather details...', true);
+    try {
+      const g = await (await fetch('https://geocoding-api.open-meteo.com/v1/search?count=1&language=en&name=' + encodeURIComponent(name))).json();
+      if (!g.results || !g.results.length) { show(`${name} isn't a valid city name`, false); return; }
+      const p = g.results[0];
+      const w = await (await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${p.latitude}&longitude=${p.longitude}&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code`)).json();
+      const c = w.current, [d, i] = CODES[c.weather_code] || ['—', '🌡️'];
+      icon.textContent = i; temp.textContent = Math.floor(c.temperature_2m); desc.textContent = d;
+      loc.textContent = `${p.name}, ${p.country_code}`; feels.textContent = Math.floor(c.apparent_temperature) + '°C'; hum.textContent = c.relative_humidity_2m + '%';
+      show(''); form.hidden = true; out.hidden = false; backBtn.hidden = false;
+    } catch (err) { show('Something went wrong', false); }
+  });
+  backBtn.onclick = () => { out.hidden = true; form.hidden = false; backBtn.hidden = true; city.value = ''; show(''); city.focus(); };
+</script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BMI Calculator · Shruti Singhal</title>
+<link rel="stylesheet" href="../common.css">
+<style>
+  :root{--dark-blue:#0b0d21;--light-white:#fafafa;--light-blue:#4f7df9;--light-pink:#e91e63;--dull-blue:#1d1e33}
+  body{min-height:100vh;background:radial-gradient(circle at 20% 15%,#3a2a6b 0,transparent 45%),radial-gradient(circle at 85% 80%,#6b1d45 0,transparent 45%),#12132b;padding:64px 16px 32px}
+  .box{max-width:420px;margin:auto;text-align:center;background:var(--dark-blue);color:var(--light-white);padding:16px;border-radius:38px;box-shadow:0 20px 50px rgba(0,0,0,.4)}
+  h1{font-size:36px;padding:16px 0;margin:0;font-weight:700}
+  h2{font-size:24px;color:var(--light-pink);margin:8px 0}
+  label{display:block;font-size:18px;font-weight:700;text-align:left;margin:14px 4px 6px}
+  input{width:100%;padding:10px;font-size:16px;border-radius:6px;border:1px solid #c9c9d6;color:var(--dull-blue)}
+  .btn{display:block;width:100%;background:var(--light-pink);border:0;color:#fff;font-size:16px;padding:12px;border-radius:6px;margin:22px 0;cursor:pointer;font-weight:600}
+  .btn:hover{filter:brightness(1.08)}
+  .result-value{color:var(--light-blue);font-size:30px;font-weight:700;margin:4px 0 10px}
+  .info{background:var(--dull-blue);padding:16px;border-bottom-left-radius:38px;border-bottom-right-radius:38px;font-size:14px;margin:0 -16px -16px}
+  h3{font-size:18px;margin:14px 0 2px}
+  .bad{color:#fe5c4c}.good{color:#45c65a}
+  p{margin:0 0 6px;opacity:.9}
+</style>
+</head>
+<body>
+<a class="back" href="../../">← Portfolio</a>
+<div class="box">
+  <h1>BMI Calculator</h1>
+  <section id="result" hidden>
+    <h2>Your BMI value is:</h2>
+    <div class="result-value" id="bmiValue"></div>
+    <div>So you are:</div>
+    <div class="result-value" id="bmiResult"></div>
+    <button class="btn" id="recalc">Re-Calculate</button>
+  </section>
+  <form id="form">
+    <label for="height">Height (cm)</label>
+    <input type="number" id="height" placeholder="Enter your height in cm" min="1" step="any" required>
+    <label for="weight">Weight (kg)</label>
+    <input type="number" id="weight" placeholder="Enter your weight in kg" min="1" step="any" required>
+    <button class="btn">Calculate</button>
+  </form>
+  <div class="info">
+    <h2>What does your BMI mean?</h2>
+    <p>Once you have measured your BMI, you can find your healthy weight range.</p>
+    <h3 class="bad">Under 18.5</h3><p>Underweight.</p>
+    <h3 class="good">18.5 to 24.9</h3><p>Healthy weight range for young and middle-aged adults.</p>
+    <h3 class="bad">25.0 to 29.9</h3><p>Overweight.</p>
+    <h3 class="bad">30 and over</h3><p>Obese.</p>
+  </div>
+</div>
+<p class="credit" style="color:#fff">Web version of my Salesforce LWC project</p>
+<script>
+  const form = document.getElementById('form'), res = document.getElementById('result');
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const h = Number(height.value) / 100, w = Number(weight.value);
+    const bmi = Number((w / (h * h)).toFixed(2));
+    const label = bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Healthy' : bmi < 30 ? 'Overweight' : 'Obese';
+    bmiValue.textContent = bmi; bmiResult.textContent = label;
+    form.hidden = true; res.hidden = false;
+  });
+  recalc.onclick = () => { form.reset(); res.hidden = true; form.hidden = false; };
+</script>
+</body>
+</html>

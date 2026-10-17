@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Employee Survey · Shruti Singhal</title>
+<link rel="stylesheet" href="../common.css">
+<style>
+  body{min-height:100vh;background:#f3f2f2;padding:64px 16px 32px;color:#181818}
+  .wrap{max-width:640px;margin:auto}
+  .hero{background:linear-gradient(120deg,#0b5cab,#1b96ff);color:#fff;border-radius:12px 12px 0 0;padding:26px 24px}
+  .hero h1{margin:0 0 6px;font-size:26px}
+  .hero p{margin:0;opacity:.9}
+  .bar{height:6px;background:#d8e6fe}.bar i{display:block;height:100%;background:#2e844a;width:0;transition:width .3s}
+  .card{background:#fff;border-radius:0 0 12px 12px;padding:24px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+  .q{margin-bottom:24px}
+  .q h3{font-size:16px;margin:0 0 10px}
+  .q h3 small{color:#c23934}
+  .scale{display:flex;gap:8px;flex-wrap:wrap}
+  .scale label{flex:1;min-width:52px;text-align:center;border:1px solid #c9c9c9;border-radius:8px;padding:10px 4px;cursor:pointer;font-size:13px}
+  .scale input{display:none}
+  .scale label:has(input:checked){background:#0176d3;border-color:#0176d3;color:#fff}
+  .scale b{display:block;font-size:20px}
+  select,textarea{width:100%;padding:10px;border:1px solid #c9c9c9;border-radius:6px;font:inherit}
+  textarea{min-height:90px;resize:vertical}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chips label{border:1px solid #c9c9c9;border-radius:999px;padding:7px 14px;cursor:pointer;font-size:14px}
+  .chips input{display:none}
+  .chips label:has(input:checked){background:#e9f2fe;border-color:#0176d3;color:#0b5cab}
+  .submit{width:100%;background:#0176d3;color:#fff;border:0;border-radius:6px;padding:13px;font-size:17px;cursor:pointer;font-weight:600}
+  .thanks{text-align:center;padding:30px 10px}
+  .thanks .big{font-size:64px}
+  .thanks h2{margin:6px 0}
+  .again{margin-top:16px;background:#fff;border:1px solid #0176d3;color:#0176d3;border-radius:6px;padding:9px 18px;cursor:pointer;font:inherit}
+</style>
+</head>
+<body>
+<a class="back" href="../../">← Portfolio</a>
+<div class="wrap">
+  <div class="hero"><h1>Employee Feedback Survey</h1><p>Takes about 1 minute. Your answers are anonymous.</p></div>
+  <div class="bar"><i id="prog"></i></div>
+  <div class="card">
+    <form id="form">
+      <div class="q"><h3>1. How satisfied are you with your work overall? <small>*</small></h3><div class="scale" data-name="sat"></div></div>
+      <div class="q"><h3>2. How likely are you to recommend this company as a place to work? <small>*</small></h3><div class="scale" data-name="rec"></div></div>
+      <div class="q"><h3>3. Which department do you work in? <small>*</small></h3>
+        <select name="dept" required><option value="">Select…</option><option>Engineering</option><option>Quality Assurance</option><option>Product</option><option>Sales</option><option>HR</option><option>Other</option></select></div>
+      <div class="q"><h3>4. What do you enjoy most? (pick any)</h3>
+        <div class="chips">
+          <label><input type="checkbox" name="enjoy" value="Team">Team</label><label><input type="checkbox" name="enjoy" value="Learning">Learning</label>
+          <label><input type="checkbox" name="enjoy" value="Flexibility">Flexibility</label><label><input type="checkbox" name="enjoy" value="Projects">Projects</label>
+          <label><input type="checkbox" name="enjoy" value="Culture">Culture</label></div></div>
+      <div class="q"><h3>5. Anything we could do better?</h3><textarea name="comment" placeholder="Your suggestions…"></textarea></div>
+      <button class="submit">Submit feedback</button>
+    </form>
+    <div class="thanks" id="thanks" hidden>
+      <div class="big">🎉</div><h2>Thank you for your feedback!</h2>
+      <p id="summary"></p>
+      <button class="again" id="again">Take the survey again</button>
+    </div>
+  </div>
+  <p class="credit">Web version of my Salesforce Surveys project</p>
+</div>
+<script>
+  const faces = ['😞','🙁','😐','🙂','😄'], words = ['Very low','Low','Okay','Good','Excellent'];
+  document.querySelectorAll('.scale').forEach(s => s.innerHTML = faces.map((f, i) => `<label><input type="radio" name="${s.dataset.name}" value="${i + 1}" ${i ? '' : 'required'}><b>${f}</b>${words[i]}</label>`).join(''));
+  const req = ['sat', 'rec', 'dept'];
+  const update = () => { const fd = new FormData(form); prog.style.width = (req.filter(k => fd.get(k)).length / req.length * 100) + '%'; };
+  form.addEventListener('change', update);
+  form.addEventListener('submit', e => {
+    e.preventDefault(); const fd = new FormData(form);
+    summary.textContent = `Satisfaction: ${words[fd.get('sat') - 1]} · Department: ${fd.get('dept')}`;
+    form.hidden = true; thanks.hidden = false; prog.style.width = '100%';
+  });
+  again.onclick = () => { form.reset(); update(); thanks.hidden = true; form.hidden = false; };
+</script>
+</body>
+</html>

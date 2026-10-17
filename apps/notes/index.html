@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Note Taking App · Shruti Singhal</title>
+<link rel="stylesheet" href="../common.css">
+<style>
+  :root{--dark-blue:#022451;--light-blue:#0076d3;--light-gray:#cecece;--red:#e91515}
+  body{min-height:100vh;background:var(--dark-blue);padding:64px 16px 32px}
+  .grid{display:flex;flex-wrap:wrap;justify-content:center;max-width:1000px;margin:auto}
+  .box{height:300px;width:300px;background:#fff;border-radius:12px;margin:12px;display:flex;flex-direction:column;overflow:hidden}
+  .add{align-items:center;justify-content:center;cursor:pointer;border:0;font:inherit}
+  .add:hover{box-shadow:0 0 0 3px #4ea3ff}
+  .circle{border:2px solid var(--dark-blue);border-radius:50%;width:72px;height:72px;display:grid;place-items:center;font-size:44px;color:var(--dark-blue)}
+  h2{font-size:20px;font-weight:700;margin:12px 0 0;color:var(--dark-blue)}
+  header{background:var(--light-blue);color:#fff;padding:10px 16px}
+  header h2{color:#fff;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .body{flex:1;overflow:auto;padding:8px 16px;font-size:15px}
+  .foot{display:flex;justify-content:space-between;align-items:center;padding:6px 12px 6px 16px;background:var(--light-gray)}
+  .date{color:#6d6d6d;font-size:13px;font-style:italic}
+  .ib{border:0;border-radius:4px;width:28px;height:28px;color:#fff;cursor:pointer;margin-left:4px}
+  .edit{background:var(--dark-blue)}.del{background:var(--red)}
+  dialog{border:0;border-radius:10px;padding:0;width:min(560px,92vw)}
+  dialog::backdrop{background:rgba(0,0,0,.5)}
+  .mh{padding:16px 20px;border-bottom:1px solid #ddd;font-size:20px;font-weight:600}
+  .mb{padding:16px 20px}
+  label{font-size:13px;color:#444;display:block;margin:0 0 4px}
+  input{width:100%;padding:9px;font-size:15px;border:1px solid #bbb;border-radius:4px;margin-bottom:14px}
+  .tools{display:flex;gap:4px;border:1px solid #bbb;border-bottom:0;border-radius:4px 4px 0 0;padding:4px;background:#f6f6f6}
+  .tools button{border:1px solid #ccc;background:#fff;border-radius:3px;min-width:30px;height:28px;cursor:pointer}
+  .rte{min-height:140px;border:1px solid #bbb;border-radius:0 0 4px 4px;padding:9px;outline:none}
+  .mf{padding:12px 20px;border-top:1px solid #ddd;background:#f3f3f3;text-align:right}
+  .btn{border:1px solid #c9c9c9;background:#fff;border-radius:4px;padding:8px 16px;cursor:pointer;font:inherit}
+  .brand{background:#0176d3;color:#fff;border-color:#0176d3}
+  .brand:disabled{opacity:.5;cursor:not-allowed}
+  .toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);padding:12px 20px;border-radius:6px;color:#fff;font-weight:600;z-index:20}
+  .credit{color:#cfd8ea}
+</style>
+</head>
+<body>
+<a class="back" href="../../">← Portfolio</a>
+<div class="grid" id="grid">
+  <button class="box add" id="addBtn"><div class="circle">+</div><h2>Add New Note</h2></button>
+</div>
+<p class="credit">Notes are saved in your browser · Web version of my Salesforce LWC + Apex project</p>
+<dialog id="modal">
+  <form method="dialog" id="mform">
+    <div class="mh" id="mtitle">Add Note</div>
+    <div class="mb">
+      <label for="title">Title</label><input id="title" autocomplete="off">
+      <label>Description</label>
+      <div class="tools">
+        <button type="button" data-c="bold"><b>B</b></button><button type="button" data-c="italic"><i>I</i></button>
+        <button type="button" data-c="underline"><u>U</u></button><button type="button" data-c="insertUnorderedList">•</button>
+      </div>
+      <div class="rte" id="desc" contenteditable="true"></div>
+    </div>
+    <div class="mf"><button type="button" class="btn" id="cancel">Cancel</button> <button class="btn brand" id="save" disabled>Add Note</button></div>
+  </form>
+</dialog>
+<div class="toast" id="toast" hidden></div>
+<script>
+  const KEY = 'ss-notes';
+  const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch (e) { return null; } };
+  let notes = load() || [{ id: 1, title: 'Welcome 👋', body: '<p>This is a <b>demo</b> of my Note Taking App.</p><ul><li>Click <b>Add New Note</b></li><li>Edit or delete notes</li></ul>', date: Date.now() }];
+  let editing = null;
+  const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(notes)); } catch (e) {} };
+  const clean = html => { const t = document.createElement('div'); t.innerHTML = html; t.querySelectorAll('script,style,iframe,object').forEach(x => x.remove()); t.querySelectorAll('*').forEach(x => [...x.attributes].forEach(a => /^on/i.test(a.name) && x.removeAttribute(a.name))); return t.innerHTML; };
+  function toast(t, ok = true) { const toastEl = document.getElementById('toast'); toastEl.textContent = t; toastEl.style.background = ok ? '#2e844a' : '#ba0517'; toastEl.hidden = false; clearTimeout(window._t); window._t = setTimeout(() => toastEl.hidden = true, 2200); }
+  function render() {
+    grid.querySelectorAll('.note').forEach(n => n.remove());
+    notes.slice().sort((a, b) => b.date - a.date).forEach(n => {
+      const d = document.createElement('div'); d.className = 'box note';
+      d.innerHTML = `<header><h2></h2></header><div class="body">${clean(n.body)}</div><div class="foot"><span class="date">${new Date(n.date).toDateString()}</span><span><button class="ib edit" title="Edit note">✎</button><button class="ib del" title="Delete note">🗑</button></span></div>`;
+      d.querySelector('h2').textContent = n.title;
+      d.querySelector('.edit').onclick = () => open(n);
+      d.querySelector('.del').onclick = () => { if (confirm('Are you sure you want to delete this note?')) { notes = notes.filter(x => x !== n); persist(); render(); toast('Note Deleted Successfully!!'); } };
+      grid.appendChild(d);
+    });
+  }
+  const valid = () => save.disabled = !(title.value.trim() && desc.textContent.trim());
+  function open(n) { editing = n || null; title.value = n ? n.title : ''; desc.innerHTML = n ? n.body : ''; mtitle.textContent = save.textContent = n ? 'Update Note' : 'Add Note'; valid(); modal.showModal(); title.focus(); }
+  addBtn.onclick = () => open();
+  cancel.onclick = () => modal.close();
+  title.oninput = desc.oninput = valid;
+  document.querySelectorAll('.tools button').forEach(b => b.onclick = () => { document.execCommand(b.dataset.c); desc.focus(); valid(); });
+  mform.addEventListener('submit', () => {
+    const body = clean(desc.innerHTML);
+    if (editing) { Object.assign(editing, { title: title.value.trim(), body, date: Date.now() }); toast('Note Updated Successfully!!'); }
+    else { notes.push({ id: Date.now(), title: title.value.trim(), body, date: Date.now() }); toast('Note Created Successfully!!'); }
+    persist(); render();
+  });
+  render();
+</script>
+</body>
+</html>
