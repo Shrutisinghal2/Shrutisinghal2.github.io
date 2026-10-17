@@ -8,7 +8,7 @@
 // ============================================================
 window.PORTFOLIO = {
   name: "Shruti Singhal",
-  designation: "QA & Software Testing · Salesforce Certified Platform Developer I",
+  designation: "Tech enthusiast building web apps and Salesforce solutions",
   company: "",                // leave empty to show only the line above
   location: "Jaipur, Rajasthan",
   photo: "photo.jpg",
