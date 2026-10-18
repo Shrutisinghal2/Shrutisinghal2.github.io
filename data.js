@@ -8,7 +8,7 @@
 // ============================================================
 window.PORTFOLIO = {
   name: "Shruti Singhal",
-  designation: "Tech enthusiast building web apps and Salesforce solutions",
+  designation: "Software Engineer | Software & Product",
   company: "",                // leave empty to show only the line above
   location: "Jaipur, Rajasthan",
   photo: "photo.jpg",
@@ -25,7 +25,7 @@ window.PORTFOLIO = {
   summary: [
     "I'm an MCA graduate (Banasthali Vidyapith, 2026) focused on software testing and quality. During my internship at PaySecure Technologies I tested payment processing and merchant management modules.",
     "I write test cases from requirements, run functional, integration and regression tests, reproduce defects and work with developers until they're fixed. I'm a Salesforce Certified Platform Developer I and enjoy building small apps, from Lightning Web Components to JavaScript web apps, to understand quality from the developer's side too.",
-    "I'm looking for QA, software testing and automation roles.",
+    "I'm looking for roles in software development, testing and product.",
   ],
 
   projects: [
