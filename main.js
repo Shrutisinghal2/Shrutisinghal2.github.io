@@ -52,7 +52,7 @@
   photo.alt = P.name;
   photo.addEventListener('error', () => photo.remove());       // no photo yet: show initials
   photo.addEventListener('load', () => $('initials').remove());
-  photo.src = P.photo;
+  photo.src = P.photo + '?v=' + Date.now();   // always load the newest photo
   [['LinkedIn', P.links.linkedin], ['GitHub', P.links.github], ['Trailhead', P.links.trailhead]]
     .forEach(([label, href]) => { if (href) $('socials').appendChild(link(label, href)); });
 
@@ -62,8 +62,10 @@
   $('address').textContent = P.location;
   $('resumeBtn').href = P.resume;
   const siteUrl = P.links.portfolio || location.href;
-  if (!renderQr($('siteQr'), siteUrl, 'this portfolio')) $('siteQrDownload').hidden = true;
-  $('siteQrDownload').addEventListener('click', () => downloadQr(siteUrl, 'portfolio-qr.png'));
+  if ($('siteQr')) {   // optional: only if a site QR is added back to index.html
+    if (!renderQr($('siteQr'), siteUrl, 'this portfolio')) $('siteQrDownload').hidden = true;
+    $('siteQrDownload').addEventListener('click', () => downloadQr(siteUrl, 'portfolio-qr.png'));
+  }
 
   /* ---------- Section builders ---------- */
   
